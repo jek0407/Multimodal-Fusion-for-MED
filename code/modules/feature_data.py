@@ -27,8 +27,13 @@ class FeatureDataset(Dataset):
 
         Return: [D]
         """
-        # TODO: aggregate feature by max or average pooling
-        raise NotImplementedError
+        # max pooling:
+        aggregated_feature = np.max(frame_features, axis=0)
+        # average pooling:
+        # aggregated_feature = np.mean(frame_features, axis=0)
+        
+        return aggregated_feature
+
 
     def __getitem__(self, idx):
         item = self.df.iloc[idx]
@@ -37,7 +42,7 @@ class FeatureDataset(Dataset):
         feature_path = osp.join(self.feature_dir, f'{vid}.pkl')
         frame_features = np.stack(LoadFeature.load_features(feature_path))
         feature = self.aggregate_frame_features(frame_features)
-        feature = torch.as_tensor(feature, dtype=torch.float)
+        feature = torch.as_tensor(feature, dtype=torch.float).squeeze()
         return feature, label
 
 

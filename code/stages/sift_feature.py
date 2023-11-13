@@ -29,7 +29,27 @@ class SIFTFeature(Stage):
         # TODO: Extract SIFT feature for the current frame
         # Use self.sift.detectAndCompute
         # Remember to handle when it returns None
-        raise NotImplementedError
+            # Ensure the frame is in grayscale as SIFT requires it
+        if frame.shape[-1] == 3:  # Check if the image has 3 channels
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        else:
+            gray_frame = frame
+
+        # Use self.sift.detectAndCompute
+        keypoints, descriptors = self.sift.detectAndCompute(gray_frame, None)
+
+        # Remember to handle when it returns None
+        if descriptors is None:
+            # Handle case with no descriptors, you might adapt this part as per your use-case
+            descriptors = np.empty((0, 128), dtype=np.float32)
+        elif descriptors.shape[0] > self.num_features:
+            # Optionally, down-sample descriptors if they exceed num_features
+            chosen_indices = np.random.choice(
+                descriptors.shape[0], self.num_features, replace=False)
+            descriptors = descriptors[chosen_indices]
+
+        return descriptors
+        # raise NotImplementedError
 
     def process(self, task):
         task.start(self)

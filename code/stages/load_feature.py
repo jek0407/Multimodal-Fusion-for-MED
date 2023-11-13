@@ -1,5 +1,7 @@
 import os.path as osp
 import pickle
+import pandas as pd
+import os
 
 import numpy as np
 from pyturbo import Stage
@@ -21,13 +23,31 @@ class LoadFeature(Stage):
     @staticmethod
     def load_features(feature_path):
         features = []
-        with open(feature_path, 'rb') as f:
-            while True:
+        
+        # check file extension
+        _, file_extension = os.path.splitext(feature_path)
+
+        # Pickle 
+        if file_extension == '.pkl':
+            with open(feature_path, 'rb') as f:
+                while True:
+                    try:
+                        _, frame_feature = pickle.load(f)
+                        features.append(frame_feature)
+                    except EOFError:
+                        break
+
+        # CSV 
+        elif file_extension == '.csv':
                 try:
-                    _, frame_feature = pickle.load(f)
+                    # UTF-8 encoding
+                    frame_feature = pd.read_csv(feature_path, encoding='utf-8')
                     features.append(frame_feature)
-                except EOFError:
-                    break
+                except UnicodeDecodeError:
+                    # othere encoding
+                    frame_feature = pd.read_csv(feature_path, encoding='ISO-8859-1')
+                    features.append(frame_feature)
+
         return features
 
     def process(self, task):

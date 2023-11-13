@@ -31,7 +31,21 @@ class LoadVideo(Stage):
         Return: downsampled frames [t x H x W x C]
         """
         # TODO: downsample the frames to self.target_frame_rate
-        raise NotImplementedError
+        
+        # Calculate the frame skip: how many frames to skip to achieve
+        # the target frame rate. `skip` should be an integer.
+        skip = int(np.round(frame_rate / self.target_frame_rate))
+
+        # Ensuring that skip is at least 1 to avoid division by zero
+        # and infinite loops.
+        skip = max(1, skip)
+
+        # Downsample frames by selecting every `skip`-th frame.
+        downsampled_frames = frames[::skip]
+
+        return downsampled_frames
+        
+        #  raise NotImplementedError
 
     def process(self, task):
         task.start(self)

@@ -13,9 +13,8 @@ class CNNFeature(Stage):
     Output: yield CNN features of each frame, each as [D]
     """
 
-    def allocate_resource(self, resources, *, model_name='resnet18',
-                          weight_name='ResNet18_Weights',
-                          node_name='avgpool', replica_per_gpu=1):
+    def allocate_resource(self, resources, *, model_name, weight_name,
+                          node_name, replica_per_gpu=1):
         self.model_name = model_name
         self.weight_name = weight_name
         self.node_name = node_name
@@ -36,6 +35,8 @@ class CNNFeature(Stage):
             else:
                 self.device = 'cpu'
                 self.logger.warn('No available GPUs, running on CPU.')
+
+                
             weights = getattr(models, self.weight_name).DEFAULT
             self.transforms = weights.transforms()
             base_model = getattr(models, self.model_name)(weights=weights)
@@ -49,12 +50,23 @@ class CNNFeature(Stage):
 
         Return: Feature, [B x D]
         """
-        # TODO: extract CNN feature for given batch
-        # First convert batch into [B x C x H x W] format expected by PyTorch.
-        # Then apply self.transforms to batch to get model input.
-        # Finally apply self.model on the input to get features.
-        # Wrap the model with torch.no_grad() to avoid OOM.
-        raise NotImplementedError
+
+        frames = frames.permute(0, 3, 1, 2).float()
+
+        frames /= 255.0
+
+        frames = self.transforms(frames)
+
+        frames = frames.to(self.device)
+
+        # Extract features
+        with torch.no_grad():
+            features = self.model(frames)
+
+        features = features['feature'].squeeze(-1).squeeze(-1)
+
+        return features
+
 
     def process(self, task):
         task.start(self)
@@ -66,3 +78,5 @@ class CNNFeature(Stage):
                             parent_task=task).start(self)
             yield sub_task.finish(feature)
         task.finish()
+
+        

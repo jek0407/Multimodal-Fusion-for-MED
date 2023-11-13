@@ -1,8 +1,7 @@
-# CMU 11-775 Fall 2022 Homework 2
-
-[PDF Handout](docs/handout.pdf)
-
-In this homework we will perform a video classification task with visual features.
+### This project will perform Multimedia Event Detection(MED) with Multi-modal Fusion.
+### The final features to be used is a fusion of SoundNet features & 3D CNN features.
+### In this project, we will try various fusion methods using pre-extracted features (snf, cnn3d) to extract new features.
+### Finally, the fusion features will be used to train and test the mlp, the classifier.
 
 ## Recommended Hardware
 
@@ -21,106 +20,79 @@ conda env create -f environment.yml -p ./env
 conda activate ./env
 ```
 
-## Dataset
-
-You will continue using the data from [Homework 1](https://github.com/KevinQian97/11755-ISR-HW1#data-and-labels) for this homework, which you should have downloaded.
-
-If you don't have the data, download it from [AWS S3](https://cmu-11775-vm.s3.amazonaws.com/spring2022/11775_s22_data.zip) with the following commands:
+## Check CUDA version
 
 ```bash
-# Start from within this repo
-cd ./data
-# Download and decompress data (no need if you still have it from HW1)
-wget https://cmu-11775-vm.s3.amazonaws.com/spring2022/11775_s22_data.zip
-unzip 11775_s22_data.zip
-rm 11775_s22_data.zip
+nvidia-smi
 ```
+Check CUDA version of your device. And install the right version of pytorch(torchvision)[PyTorch](https://pytorch.org/get-started/previous-versions/)
 
-Eventually, the directory structure should look like this:
+## Dataset
+
+This project uses pre-extracted features from here : [DATA](https://github.com/KevinQian97/11755-ISR-HW1#data-and-labels) 
+Therefore, there is no need to download the data.
+
+
+## Directory structures
 
 * this repo
   * code
   * data
-    * videos (unzipped from 11775_s22_data.zip)
-    * labels (unzipped from 11775_s22_data.zip)
+    * cnn3d (features pre-extracted https://github.com/jek0407/Video-based-MED)
+    * labels
+    * snf (features pre-extracted https://github.com/jek0407/SoundNet)
   * env
   * ...
 
-## Development and Debugging
+## About Features
 
-Some functions in the pipeline are deliberately left blank for you to implement, where an `NotImplementedError` will be raised.
-We recommend you generate a small file list (e.g. `debug.csv` with 20 lines) for fast debugging during initial development.
-The `--debug` option in some scripts are also very helpful.
-In addition, you can enable `pdb` debugger upon exception
+We had extracted features in advance, 
 
-```bash
-# Instead of 
-python xxx.py yyy zzz
-# Run
-ipython --pdb xxx.py -- yyy zzz
-```
+* snf (SonudNet Features)
+  * Check this repository : [SoudNet](https://github.com/jek0407/SoundNet)
+* cnn3d (3D CNN Features)
+  * Check this repository : [Video](https://github.com/jek0407/Video-based-MED)
 
-## SIFT Features
+Through various fusion methods, we extract new features that are expected to be better.
 
-To extract SIFT features, use
 
-```bash
-python code/run_sift.py data/labels/xxx.csv
-```
+## Multi-modal Fusion
 
-By default, features are stored under `data/sift`.
 
-To train K-Means with SIFT feature for 128 clusters, use
-
-```bash
-python code/train_kmeans.py data/labels/xxx.csv data/sift 128 sift_128
-```
-
-By default, model weights are stored under `data/kmeans`.
-
-To extract Bag-of-Words representation with the trained model, use
-
-```bash
-python code/run_bow.py data/labels/xxx.csv sift_128 data/sift
-```
-
-By default, features are stored under `data/bow_<model_name>` (e.g., `data/bow_sift_128`).
-
-## CNN Features
-
-To extract CNN features, use
-
-```bash
-python code/run_cnn.py data/labels/xxx.csv
-```
-
-By default, features are stored under `data/cnn`.
-
-## 3D CNN Features
-
-To extract 3D CNN features, use
-
-```bash
-python code/run_cnn3d.py data/labels/xxx.csv
-```
-
-By default, features are stored under `data/cnn3d`.
 
 ## MLP Classifier
 
 The training script automatically and deterministically split the `train_val` data into training and validation, so you do not need to worry about it.
 
-To train MLP with SIFT Bag-of-Words, run
+### Uni-Modal
+
+To train MLP with SoundNet features, run
 
 ```bash
-python code/run_mlp.py sift --feature_dir data/bow_sift_128 --num_features 128
+python python code/run_mlp.py snf --feature_dir data/snf --num_features <num_feat>
 ```
+
+By default, training logs and predictions are stored under `data/mlp/cnn3d/version_xxx/`.
+
 
 To train MLP with CNN features, run
 
 ```bash
-python code/run_mlp.py cnn --feature_dir data/cnn --num_features <num_feat>
+python python code/run_mlp.py cnn3d --feature_dir data/cnn3d --num_features 512
 ```
 
-By default, training logs and predictions are stored under `data/mlp/model_name/version_xxx/`.
-You can directly submit the CSV file to [Kaggle](https://www.kaggle.com/competitions/cmu-11775-f23-hw2-video-based-med/overview).
+By default, training logs and predictions are stored under `data/mlp/cnn3d/version_xxx/`.
+
+
+### Multi-Modal
+
+To train with Multimodal Fusion features, run
+```bash
+python code/run_fusion_mlp.py fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features <num_feat>
+```
+
+By default, training logs and predictions are stored under `data/mlp/fusion/version_xxx/`.
+
+
+### This project was from CMU 11-775 Fall 2023 Homework 2
+See [PDF Handout](docs/handout.pdf)
