@@ -1,7 +1,8 @@
 ### This project will perform Multimedia Event Detection(MED) with Multi-modal Fusion.
-### The final features to be used is a fusion of SoundNet features & 3D CNN features.
-### In this project, we will try various fusion methods using pre-extracted features (snf, cnn3d) to extract new features.
-### Finally, the fusion features will be used to train and test the mlp, the classifier.
+
+The final features to be used is a fusion of SoundNet features & 3D CNN features.
+In this project, we will try various fusion methods using pre-extracted features (snf, cnn3d) to extract new features.
+Finally, the fusion features will be used to train and test the mlp, the classifier.
 
 ## Recommended Hardware
 
@@ -56,10 +57,6 @@ We had extracted features in advance,
 Through various fusion methods, we extract new features that are expected to be better.
 
 
-## Multi-modal Fusion
-
-
-
 ## MLP Classifier
 
 The training script automatically and deterministically split the `train_val` data into training and validation, so you do not need to worry about it.
@@ -69,10 +66,10 @@ The training script automatically and deterministically split the `train_val` da
 To train MLP with SoundNet features, run
 
 ```bash
-python python code/run_mlp.py snf --feature_dir data/snf --num_features <num_feat>
+python python code/run_mlp.py snf --feature_dir data/snf --num_features 256
 ```
 
-By default, training logs and predictions are stored under `data/mlp/cnn3d/version_xxx/`.
+By default, training logs and predictions are stored under `data/mlp/snf/version_xxx/`.
 
 
 To train MLP with CNN features, run
@@ -88,7 +85,7 @@ By default, training logs and predictions are stored under `data/mlp/cnn3d/versi
 
 To train with Multimodal Fusion features, run
 ```bash
-python code/run_fusion_mlp.py fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features <num_feat>
+python code/run_fusion_mlp.py fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features 767
 ```
 
 By default, training logs and predictions are stored under `data/mlp/fusion/version_xxx/`.
