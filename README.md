@@ -66,29 +66,30 @@ The training script automatically and deterministically split the `train_val` da
 To train MLP with SoundNet features, run
 
 ```bash
-python python code/run_mlp.py snf --feature_dir data/snf --num_features 256
+python code/run_mlp.py snf --feature_dir data/snf --num_features 255
 ```
 
-By default, training logs and predictions are stored under `data/mlp/snf/version_xxx/`.
+By default, training logs and predictions are stored under `data/mlp/snf/version_xxx/`. (Kaggle score : 0.533)
 
 
-To train MLP with CNN features, run
+To train MLP with 3D CNN features, run
 
 ```bash
-python python code/run_mlp.py cnn3d --feature_dir data/cnn3d --num_features 512
+python code/run_mlp.py cnn3d --feature_dir data/cnn3d --num_features 512
 ```
 
-By default, training logs and predictions are stored under `data/mlp/cnn3d/version_xxx/`.
+By default, training logs and predictions are stored under `data/mlp/cnn3d/version_xxx/`. (Kaggle score : 0.954)
 
 
 ### Multi-Modal
-
-To train with Multimodal Fusion features, run
+ 
+1) To train with Multimodal Early Fusion features, run
 ```bash
 python code/run_fusion_mlp.py fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features 767
 ```
+num_features = 255(snf) + 512(cnn3d)
 
-By default, training logs and predictions are stored under `data/mlp/fusion/version_xxx/`.
+By default, training logs and predictions are stored under `data/mlp/fusion/version_xxx/`. (Kaggle score : 0.950)
 
 
 ### This project was from CMU 11-775 Fall 2023 Homework 2

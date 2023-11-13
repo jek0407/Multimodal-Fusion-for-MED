@@ -39,8 +39,12 @@ class FeatureDataset(Dataset):
         item = self.df.iloc[idx]
         vid = item['Id']
         label = item.get('Category', None)
-        feature_path = osp.join(self.feature_dir, f'{vid}.pkl')
-        frame_features = np.stack(LoadFeature.load_features(feature_path))
+        feature_path1 = osp.join(self.feature_dir, f'{vid}.pkl')
+        feature_path2 = osp.join(self.feature_dir, f'{vid}.csv')
+        try:
+            frame_features = np.stack(LoadFeature.load_features(feature_path1))
+        except:
+            frame_features = np.stack(LoadFeature.load_features(feature_path2))
         feature = self.aggregate_frame_features(frame_features)
         feature = torch.as_tensor(feature, dtype=torch.float).squeeze()
         return feature, label
