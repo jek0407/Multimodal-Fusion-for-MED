@@ -6,13 +6,13 @@ import torch
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
-from modules import FeatureDataModule, MlpClassifier
+from modules import FeatureLateFusionDataModule, LateFusionMlpClassifier
 
 
 def parse_args(argv=None):
     parser = ArgumentParser(__file__, add_help=False)
     parser.add_argument('name')
-    parser = FeatureDataModule.add_argparse_args(parser)
+    parser = FeatureLateFusionDataModule.add_argparse_args(parser)
     parser = MlpClassifier.add_argparse_args(parser)
     parser = pl.Trainer.add_argparse_args(parser)
     parser.add_argument('--earlystop_patience', type=int, default=15)
@@ -25,8 +25,10 @@ def parse_args(argv=None):
 
 
 def main(args):
-    data_module = FeatureDataModule(args)
-    model = MlpClassifier(args)
+    data_module_1 = FeatureLateFusionDataModule(args)[0], FeatureLateFusionDataModule(args)[1]
+    data_module_2 = FeatureLateFusionDataModule(args)[2], FeatureLateFusionDataModule(args)[3]
+    
+    model = LateFusionMlpClassifier(args)
     logger = TensorBoardLogger(args.default_root_dir, args.name)
     checkpoint_callback = ModelCheckpoint(
         filename='{epoch}-{step}-{val_acc:.4f}', monitor='val_acc',
@@ -36,8 +38,11 @@ def main(args):
     trainer = pl.Trainer.from_argparse_args(
         args, logger=logger,
         callbacks=[checkpoint_callback, early_stop_callback])
-    trainer.fit(model, data_module)
-    predictions = trainer.predict(datamodule=data_module, ckpt_path='best')
+    trainer.fit(model, data_module_1)
+
+    predictions_1 = trainer.predict(datamodule=data_module_1, ckpt_path='best')
+    predictions_2 = trainer.predict(datamodule=data_module_2, ckpt_path='best')
+    
     df = data_module.test_df.copy()
     df['Category'] = torch.concat(predictions).numpy()
     prediction_path = osp.join(logger.log_dir, 'test_prediction.csv')

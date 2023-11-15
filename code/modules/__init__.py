@@ -1,3 +1,5 @@
 from .feature_data import FeatureDataModule
 from .mlp import MlpClassifier
-from .feature_fusion_data import FeatureFusionDataModule
+from .mlp import LateFusionMlpClassifier
+from .feature_early_fusion_data import FeatureEarlyFusionDataModule
+from .feature_late_fusion_data import FeatureLateFusionDataModule

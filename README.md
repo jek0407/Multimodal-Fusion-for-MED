@@ -78,19 +78,25 @@ To train MLP with 3D CNN features, run
 python code/run_mlp.py cnn3d --feature_dir data/cnn3d --num_features 512
 ```
 
-By default, training logs and predictions are stored under `data/mlp/cnn3d/version_xxx/`. (Kaggle score : 0.954)
+By default, training logs and predictions are stored under `data/mlp/cnn3d/version_xxx/`. (Kaggle score : 0.9439)
 
 
 ### Multi-Modal
  
 1) To train with Multimodal Early Fusion features, run
 ```bash
-python code/run_fusion_mlp.py fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features 767
+python code/run_early_fusion_mlp.py ealry_fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features 767
 ```
 num_features = 255(snf) + 512(cnn3d)
 
-By default, training logs and predictions are stored under `data/mlp/fusion/version_xxx/`. (Kaggle score : 0.950)
+By default, training logs and predictions are stored under `data/mlp/early_fusion/version_xxx/`. (Kaggle score : 0.9599)
 
+2) To train with Multimodal Late Fusion features, run
+```bash
+python code/run_late_fusion_mlp.py late_fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features ???
+```
+
+By default, training logs and predictions are stored under `data/mlp/late_fusion/version_xxx/`. (Kaggle score : 0.???)
 
 ### This project was from CMU 11-775 Fall 2023 Homework 2
 See [PDF Handout](docs/handout.pdf)

@@ -6,13 +6,13 @@ import torch
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
-from modules import FeatureFusionDataModule, MlpClassifier
+from modules import FeatureEarlyFusionDataModule, MlpClassifier
 
 
 def parse_args(argv=None):
     parser = ArgumentParser(__file__, add_help=False)
     parser.add_argument('name')
-    parser = FeatureFusionDataModule.add_argparse_args(parser)
+    parser = FeatureEarlyFusionDataModule.add_argparse_args(parser)
     parser = MlpClassifier.add_argparse_args(parser)
     parser = pl.Trainer.add_argparse_args(parser)
     parser.add_argument('--earlystop_patience', type=int, default=15)
@@ -25,7 +25,7 @@ def parse_args(argv=None):
 
 
 def main(args):
-    data_module = FeatureFusionDataModule(args)
+    data_module = FeatureEarlyFusionDataModule(args)
     model = MlpClassifier(args)
     logger = TensorBoardLogger(args.default_root_dir, args.name)
     checkpoint_callback = ModelCheckpoint(
