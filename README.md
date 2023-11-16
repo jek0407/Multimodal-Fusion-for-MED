@@ -97,7 +97,7 @@ python code/run_late_fusion_mlp.py late_fusion
 ```
 'num_features' and 'feature_dir' are defined in the code.
 
-By default, training logs and predictions are stored under `data/mlp/late_fusion/version_xxx/`. (Kaggle score : 0.???)
+By default, training logs and predictions are stored under `data/mlp/late_fusion/version_xxx/`. (Kaggle score : 0.87575)
 
 2) To train with Multimodal Double Fusion features, run
 ```bash
@@ -105,7 +105,7 @@ python code/run_double_fusion_mlp.py double_fusion
 ```
 'num_features' and 'feature_dir' are defined in the code.
 
-By default, training logs and predictions are stored under `data/mlp/double_fusion/version_xxx/`. (Kaggle score : 0.???)
+By default, training logs and predictions are stored under `data/mlp/double_fusion/version_xxx/`. (Kaggle score : 0.94989)
 
 ### This project was from CMU 11-775 Fall 2023 Homework 2
 See [PDF Handout](docs/handout.pdf)
