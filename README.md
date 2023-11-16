@@ -93,10 +93,19 @@ By default, training logs and predictions are stored under `data/mlp/early_fusio
 
 2) To train with Multimodal Late Fusion features, run
 ```bash
-python code/run_late_fusion_mlp.py late_fusion --feature_dir1 data/cnn3d --feature_dir2 data/snf --num_features ???
+python code/run_late_fusion_mlp.py late_fusion 
 ```
+'num_features' and 'feature_dir' are defined in the code.
 
 By default, training logs and predictions are stored under `data/mlp/late_fusion/version_xxx/`. (Kaggle score : 0.???)
+
+2) To train with Multimodal Double Fusion features, run
+```bash
+python code/run_double_fusion_mlp.py double_fusion 
+```
+'num_features' and 'feature_dir' are defined in the code.
+
+By default, training logs and predictions are stored under `data/mlp/double_fusion/version_xxx/`. (Kaggle score : 0.???)
 
 ### This project was from CMU 11-775 Fall 2023 Homework 2
 See [PDF Handout](docs/handout.pdf)
